@@ -1,0 +1,31 @@
+[package]
+name = "tauri-keyboard-test"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "my_keyboard_test_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+[profile.release]
+panic = "abort"      # 出错直接退出，不打印啰嗦的错误信息
+codegen-units = 1    # 牺牲编译速度，换取更优的代码体积
+lto = true           # 开启“链接时优化”，这是压缩体积的神器
+opt-level = "z"      # 专门针对“体积(Size)”进行优化，而不是速度
+strip = true         # 移除符号表（这是最占空间的东西）

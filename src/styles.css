@@ -1,0 +1,155 @@
+:root {
+  --bg-color: #1a1a1a;       /* 背景稍微深一点，更显专业 */
+  --key-bg: #333;
+  --key-border: #111;
+  --text-color: #eee;
+  
+  /* === 终极尺寸公式 === */
+  /* 解释： */
+  /* 3.8vw: 保证横向撑满 (100 / 25个键位 ≈ 4%，留点余地取3.8) */
+  /* 11vh: 保证纵向撑满 (100 / 9行高度 ≈ 11%) */
+  /* min(...): 自动在两者中选一个“不会溢出”的尺寸 */
+  /* 结果：无论屏幕多宽或多扁，键盘都会自动放大到贴近边缘 */
+  --k-size: clamp(24px, min(3.8vw, 11vh), 130px);
+  
+  /* 间距也需要动态计算，保持比例 */
+  --gap: clamp(2px, 0.3vw, 10px);
+  --section-gap: clamp(10px, 1.5vw, 40px);
+  
+  font-family: 'Segoe UI', sans-serif;
+  user-select: none;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden; 
+  /* 极小的内边距，作为最后一道防线，防止按键贴到窗口边框上 */
+  padding: 1vh 1vw; 
+  box-sizing: border-box;
+}
+
+/* 顶部标题区 */
+.header {
+  flex: 0 0 auto;
+  /* 标题高度也用 vh，防止在大屏上标题太小 */
+  margin-bottom: 2vh; 
+  text-align: center;
+  z-index: 2;
+  /* 稍微压缩标题占用的空间，给键盘腾地儿 */
+  line-height: 1; 
+}
+
+#status { 
+  color: #888; 
+  /* 字体随屏幕高度自动缩放 */
+  font-size: max(12px, 2vh); 
+  margin-top: 1vh; 
+  min-height: 2vh;
+  font-weight: bold;
+}
+
+/* === 键盘整体容器 === */
+.keyboard-frame {
+  display: flex;
+  gap: var(--section-gap);
+  
+  /* 键盘容器内部几乎不需要 padding 了，靠 body 的 padding 就够了 */
+  padding: clamp(5px, 1vw, 20px);
+  
+  background: #222;
+  border-radius: 12px;
+  /* 加深阴影，增加立体感 */
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  
+  /* 移除所有最大尺寸限制，让它自由生长 */
+  box-sizing: border-box;
+  justify-content: center;
+  flex: 0 0 auto; 
+}
+
+/* === 通用按键样式 === */
+.key {
+  width: var(--k-size);
+  height: var(--k-size);
+  background-color: var(--key-bg);
+  border: 1px solid var(--key-border);
+  border-radius: max(3px, 0.4vw); /* 圆角也随尺寸变大 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+  /* 字体动态调整：按键大字体就大 */
+  font-size: max(10px, calc(var(--k-size) * 0.28)); 
+  font-weight: 600;
+  box-sizing: border-box;
+  line-height: 1.1;
+  transition: all 0.05s;
+  flex-shrink: 0;
+  color: #ccc;
+}
+
+.key.active {
+  background-color: #fff !important;
+  color: #000;
+  transform: scale(0.96);
+  box-shadow: 0 0 15px rgba(255,255,255,0.7);
+  z-index: 10;
+  border-color: #fff;
+}
+
+.key.tested {
+  border-color: #00ff88;
+  color: #00ff88;
+  background-color: #2a2a2a; /* 测试过的给一点点深色背景区别 */
+}
+.key.tested.active { color: #000; background-color: #fff !important;}
+
+/* === 区域布局 (完全保持不变) === */
+.section-main { display: flex; flex-direction: column; gap: var(--gap); }
+.row { display: flex; gap: var(--gap); justify-content: flex-start; }
+.row-f { margin-bottom: calc(var(--k-size) * 0.5); } /* F区稍微拉开一点距离 */
+.spacer-05 { width: calc(var(--k-size) * 0.5); flex-shrink: 0;}
+.spacer-1 { width: var(--k-size); flex-shrink: 0;}
+
+.w-back { width: calc(var(--k-size) * 2 + var(--gap)); }
+.w-tab { width: calc(var(--k-size) * 1.5 + var(--gap) * 0.5); }
+.w-caps { width: calc(var(--k-size) * 1.75 + var(--gap) * 0.75); }
+.w-enter { width: calc(var(--k-size) * 2.25 + var(--gap) * 1.25); }
+.w-shift-l { width: calc(var(--k-size) * 2.25 + var(--gap) * 1.25); }
+.w-shift-r { width: calc(var(--k-size) * 2.75 + var(--gap) * 1.75); }
+.w-ctrl { width: calc(var(--k-size) * 1.25 + var(--gap) * 0.25); }
+.w-space { flex-grow: 1; } 
+
+.section-nav { display: flex; flex-direction: column; justify-content: space-between; }
+.nav-block { display: flex; flex-direction: column; gap: var(--gap); }
+
+.section-numpad {
+  display: grid;
+  grid-template-columns: repeat(4, var(--k-size)); 
+  grid-template-rows: repeat(5, var(--k-size));    
+  gap: var(--gap);
+}
+.num-0 { grid-column: span 2; width: 100% !important; align-items: flex-start !important; padding-left: 20%; }
+.num-plus { grid-row: span 2; height: 100% !important; }
+.num-enter { grid-row: span 2; height: 100% !important; }
+
+.reset-btn {
+  margin-top: 1.5vh;
+  padding: 8px 24px;
+  background: #444;
+  color: #fff;
+  border: 1px solid #666;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: max(12px, 1.5vh);
+}
+.reset-btn:hover { background: #555; }

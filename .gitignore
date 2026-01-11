@@ -1,0 +1,39 @@
+# === Logs (日志文件) ===
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# === Dependencies (依赖包) ===
+node_modules
+.pnp
+.pnp.js
+
+# === Build Output (前端构建产物) ===
+dist
+dist-ssr
+*.local
+
+# === Editor Config (编辑器配置) ===
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Rust 编译产物 
+/src-tauri/target
+
+# Tauri 自动生成的 Schema 文件
+/src-tauri/gen/schemas
+
+.env
+.env.*
+!.env.example
